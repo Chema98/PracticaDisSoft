@@ -1,19 +1,19 @@
 package edu.uclm.esi.games2020.model;
 
-public class TresEnRaya extends Game {
-
-	public TresEnRaya() {
+public class Domino extends Game {
+	
+	public Domino() {
 		super(2);
 	}
 
 	@Override
 	public String getName() {
-		return "Tres en raya";
+		return "Domino";
 	}
 
 	@Override
 	protected Match buildMatch() {
-		return new TresEnRayaMatch();
+		return new DominoMatch();
 	}
 
 }

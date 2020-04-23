@@ -6,73 +6,93 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
+ 
+
 <style>
-	.square {
-		border: 1px outset black;
-		height:25px;
-		width:25px;
-		cursor:pointer;
-	}
-	.col-centered{
-	    float: none;
-	    margin: 0 auto;
-	}
+    .square {
+        border: 1px outset black;
+        height:25px;
+        width:25px;
+        cursor:pointer;
+    }
+    .col-centered{
+        float: none;
+        margin: 0 auto;
+    }
 </style>
 </head>
 
+ 
+
 <body>
 <div class="jumbotron text-center">
-	<h2>Juegos</h2>
-	<div id="mensajeCorto"></div>	
+    <h2>Juegos</h2>
+    <div id="mensajeCorto"></div>    
 </div>
+
+ 
 
 <div class="jumbotron text-center">
-	Elige un juego<br>
-	<select id="selectGames"></select>
-	<button onclick="joinToMatch()">Empezar partida</button>
+    Elige un juego<br>
+    <select id="selectGames"></select>
+    <button onclick="joinToMatch()">Empezar partida</button>
 </div>
 
-<script>
-	function joinToMatch() {
-		var info = {
-			type : "JoinToMatch",
-			game : selectGames.value
-		};
-		
-		var data = {
-			data : JSON.stringify(info),
-			url : "jsps/joinToMatch.jsp",
-			type : "post",
-			contentType: 'application/json',
-			dataType : 'json',
-			success : function(response) {
-				if (response.type=="match") {
-					var match = response.match;
-					sessionStorage.idMatch = match.idMatch;
-					sessionStorage.started = match.started;
-					window.location.href="game.html";
-				}
-			},
-			error : function(response) {
-				alert(response.message);
-			}
-		};
-		$.ajax(data);
-	}
+ 
 
-	getGames();
-	
-	function getGames() {
-		$.get("jsps/getGames.jsp", function(response) {
-			var juegos = response.resultado;
-			var options = "";
-			for (var i=0; i<juegos.length; i++) {
-				options = options + "<option>" + juegos[i] + "</option>";
-			}
-			selectGames.innerHTML = options;
-		});
-	}
+<script>
+    function joinToMatch() {
+        var info = {
+            type : "JoinToMatch",
+            game : selectGames.value
+        };
+        
+        var data = {
+            data : JSON.stringify(info),
+            url : "jsps/joinToMatch.jsp",
+            type : "post",
+            contentType: 'application/json',
+            dataType : 'json',
+            success : function(response) {
+                if (response.type=="match") {
+                    var match = response.match;
+                    sessionStorage.idMatch = match.idMatch;
+                    sessionStorage.started = match.started;
+                    if (info.game == 'Tres en raya'){
+                        window.location.href="TresEnRaya.html";
+                    } else  if (info.game == 'Domino'){
+                    	 window.location.href="Domino.html";
+                    }else{
+                    window.location.href="game.html";
+                    }
+                }
+            },
+            error : function(response) {
+                alert(response.message);
+            }
+        };
+        $.ajax(data);
+    }
+    
+    
+
+ 
+
+    getGames();
+    
+    function getGames() {
+        $.get("jsps/getGames.jsp", function(response) {
+            var juegos = response.resultado;
+            var options = "";
+            for (var i=0; i<juegos.length; i++) {
+                options = options + "<option>" + juegos[i] + "</option>";
+            }
+            selectGames.innerHTML = options;
+        });
+    }
 </script>
+
+ 
 
 </body>
 </html>

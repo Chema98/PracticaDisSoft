@@ -26,10 +26,12 @@ public class Manager {
 		Game ajedrez = new Ajedrez();
 		Game ter = new TresEnRaya();
 		Game escoba = new Escoba();
+		Game domino = new Domino();
 		
 		this.games.put(ajedrez.getName(), ajedrez);
 		this.games.put(ter.getName(), ter);
 		this.games.put(escoba.getName(), escoba);
+		this.games.put(domino.getName(), domino);
 	}
 	
 	public JSONObject joinToMatch(User user, String gameName) {
@@ -55,7 +57,7 @@ public class Manager {
 			return user;
 		}
 		catch(SQLException e) {
-			throw new Exception("Credenciales inválidas");
+			throw new Exception("Credenciales invÃ¡lidas");
 		}
 	}
 	
@@ -84,5 +86,12 @@ public class Manager {
 			this.inPlayMatches.put(idMatch, match);
 			match.notifyStart();
 		}
+	}
+
+	public Match findMatch(String string) {
+		Match match = null;
+		//buscamos el partido con el string indicado
+		match = this.inPlayMatches.get(string);
+		return match;
 	}
 }

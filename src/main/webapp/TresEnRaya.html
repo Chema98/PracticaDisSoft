@@ -1,0 +1,42 @@
+<meta charset="UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+ 
+
+</head>
+
+ 
+
+<body>
+<div class="jumbotron text-center">
+    <h2>Juegos</h2>
+    <div data-bind="html : mensaje"></div>    
+</div>
+
+ 
+
+<!-- ko foreach : usuarios -->
+<span data-bind="html : $data"></span><br>
+<!-- /ko -->
+
+<br>Es el turno de 
+<span data-bind= "html : turno"></span><br>
+
+ 
+<!-- ko foreach : { data: tablero, as : "ficha" } -->
+<!-- ko if : $index()%3 == 0  -->
+<br>
+<!-- /ko -->
+<button data-bind="click : ponerFicha">
+    <label data-bind="html : estado"></label>
+</button>
+<!-- /ko -->
+ 
+
+<script src="https://knockoutjs.com/downloads/knockout-3.5.0.js"></script>
+<script src="TresEnRaya.js"></script>
+</body>
+</html>

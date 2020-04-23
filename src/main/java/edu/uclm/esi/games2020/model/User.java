@@ -51,4 +51,8 @@ public class User {
 	public IState getState() {
 		return this.state;
 	}
+
+	public Session getSession() {
+        return this.session;
+	}
 }

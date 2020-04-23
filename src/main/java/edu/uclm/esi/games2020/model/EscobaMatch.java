@@ -56,4 +56,40 @@ public class EscobaMatch extends Match {
 		user.setState(state);
 		state.setUser(user);
 	}
+
+	@Override
+	protected void comprobarjugada(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public User turno(List<User> players) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void comprobarTurno(User jugadorQueHaMovido) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void notificarAClientes(JSONObject jsoMovimiento) {
+		// TODO Auto-generated method stub
+		
+	}
 }
