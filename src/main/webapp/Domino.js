@@ -4,7 +4,7 @@ function ViewModel() {
     self.usuarios = ko.observableArray([]);
     self.mesa = ko.observableArray([]);
     self.fichasJugador = ko.observableArray([]);
-    self.turno = ko.observable();/* para mostrar el turno cada vez */
+    self.turno = ko.observable();
     
     var idMatch = sessionStorage.idMatch;
     var started = JSON.parse(sessionStorage.started);
@@ -15,13 +15,6 @@ function ViewModel() {
         self.mensaje("Esperando oponente para la partida " + idMatch);
     }
     
-    self.ponerEnMesa = function(ficha) {
-        var msg = {
-            type : "fichasJugador",
-            ficha : ficha
-        };
-        ws.send(JSON.stringify(msg));
-    }
     
     var url = "ws://localhost:8600/juegos";
     self.ws = new WebSocket(url);
@@ -48,8 +41,8 @@ function ViewModel() {
                 self.usuarios.push(player.userName);
             }
             /*fichas del usuario*/
-            var fichas = data.starData.data;
-            for (var i=0; i< cartas.length; i++){
+            var fichas = data.starData;
+            for (var i=0; i< fichas.length; i++){
                 self.fichasJugador.push(fichas[i]);
             }
             /*turno al empezar*/
