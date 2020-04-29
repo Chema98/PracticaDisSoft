@@ -14,7 +14,6 @@ public class Broker {
 			user="ideas";
 			pwd="ideas123";
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}

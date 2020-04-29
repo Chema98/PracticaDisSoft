@@ -13,7 +13,6 @@ public class Ajedrez extends Game {
 
 	@Override
 	protected Match buildMatch() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

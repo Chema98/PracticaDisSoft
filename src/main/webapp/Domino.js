@@ -41,10 +41,9 @@ function ViewModel() {
                 self.usuarios.push(player.userName);
             }
             /*fichas del usuario*/
-            var fichas = data.starData;
-            for (var i=0; i< fichas.length; i++){
+            var fichas = data.startData.data;
+            for (var i=0; i< fichas.length; i++)
                 self.fichasJugador.push(fichas[i]);
-            }
             /*turno al empezar*/
             var turno = data.turno;
             self.turno(turno)
