@@ -1,21 +1,21 @@
 package edu.uclm.esi.games2020.model;
 
-import java.util.List;
+import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DominoMatch extends Match {
 	private User jugadorConElTurno;
-	private boolean ganador = false;
+	private boolean empate = false;
 	private BarajaDomino fichas;
-	
+
 	public DominoMatch() {
 		super();
 		this.fichas = new BarajaDomino();
 		this.fichas.remover();
 	}
-	
+
 	@Override
 	protected void setState(User user) {
 		IState state = new DominoState();
@@ -25,15 +25,8 @@ public class DominoMatch extends Match {
 	}
 
 	@Override
-	public void start() {
-		this.started = true;
-		super.notifyStart();
-
-	}
-
-	@Override
 	protected JSONObject startData(User player) {
-		/*Fichas del usuario*/
+		/* Fichas del usuario */
 		FichaDomino ficha1 = this.fichas.getFichaDomino();
 		FichaDomino ficha2 = this.fichas.getFichaDomino();
 		FichaDomino ficha3 = this.fichas.getFichaDomino();
@@ -41,7 +34,7 @@ public class DominoMatch extends Match {
 		FichaDomino ficha5 = this.fichas.getFichaDomino();
 		FichaDomino ficha6 = this.fichas.getFichaDomino();
 		FichaDomino ficha7 = this.fichas.getFichaDomino();
-		
+
 		JSONObject jso = new JSONObject();
 		JSONArray jsaFichasDelJugador = new JSONArray();
 		jsaFichasDelJugador.put(ficha1.toJSON());
@@ -56,24 +49,23 @@ public class DominoMatch extends Match {
 	}
 
 	@Override
-	protected void comprobarjugada(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
-		// TODO Auto-generated method stub
+	protected void comprobarjugada(User jugadorQueHaMovido) {
 
 	}
 
 	@Override
-	public User turno(List<User> players) {
-		User user;
-		if (this.jugadorConElTurno == null) {
-			user = this.players.get((int) Math.random());
-		} else {
-			user = this.jugadorConElTurno;
-		}
-		return user;
+	public User turno() {
+		return new Random().nextBoolean() ? this.players.get(0) : this.players.get(1);
 	}
 
 	@Override
 	protected void comprobarTurno(User jugadorQueHaMovido) throws Exception {
+		if (this.ganador != null || empate) {
+			JSONObject jso = new JSONObject();
+			jso.put("type", "fin");
+			jugadorQueHaMovido.send(jso);
+			throw new Exception("Partida Finalizada");
+		}
 		if (this.jugadorConElTurno != jugadorQueHaMovido) {
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Turno");
@@ -84,20 +76,37 @@ public class DominoMatch extends Match {
 
 	@Override
 	protected void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception {
-		// TODO Auto-generated method stub
+		if (comprobarjugada(jsoMovimiento)) {
+			JSONObject jso = new JSONObject();
+			jso.put("type", "Movimiento");
+			jugadorQueHaMovido.send(jso);
+			throw new Exception("Movimiento no permitido");
+		}
+	}
 
+	private boolean comprobarjugada(JSONObject jsoMovimiento) {
+		
+		return false;
 	}
 
 	@Override
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void notificarAClientes(JSONObject jsoMovimiento) {
-		// TODO Auto-generated method stub
-
+		JSONObject jso = new JSONObject();
+		if (ganador != null) {
+			jso.put("type", "ganador");
+			jso.put("ganador", this.ganador.getUserName());
+		} else if (empate) {
+			jso.put("type", "empate");
+		} else {
+			jso.put("type", "cambioturno");
+			jso.put("turno", this.jugadorConElTurno.getUserName());
+		}
+		for (User user : this.players)
+			user.send(jso);
 	}
-
 }

@@ -60,15 +60,16 @@ function ViewModel() {
         	var estado = data.estado;
         	var f = new Ficha(posicion,estado)
             self.tablero.splice(posicion,1,f);
-        	/* actualizo el turno */
+        } else if (data.type =="cambioturno"){
         	var turno = data.turno;
             self.turno(turno);
         } else if (data.type=="ganador"){
-        	var ganador = data.jugador;
+        	var ganador = data.ganador;
         	self.mensaje("Ha ganado " + ganador + ",enhorabuena");
         }else if (data.type=="empate"){
-        	var ganador = data.jugador;
-        	self.mensaje("No ha habido ganador\n EMPATE");	
+        	self.mensaje("EMPATE");	
+        }else if (data.type=="fin"){
+        	self.mensaje("La partida ya ha finalizado.")
         }
     }
 }

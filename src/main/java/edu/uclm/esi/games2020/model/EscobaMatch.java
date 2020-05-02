@@ -22,12 +22,6 @@ public class EscobaMatch extends Match {
 	}
 
 	@Override
-	public void start() {
-		this.started = true;
-		super.notifyStart();
-	}
-
-	@Override
 	protected JSONObject startData(User player) {
 		Card card1 = this.deck.getCard();
 		Card card2 = this.deck.getCard();
@@ -91,5 +85,17 @@ public class EscobaMatch extends Match {
 	protected void notificarAClientes(JSONObject jsoMovimiento) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void comprobarjugada(User jugadorQueHaMovido) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public User turno() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,15 +1,13 @@
 package edu.uclm.esi.games2020.model;
 
-import java.util.List;
-
+import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class TresEnRayaMatch extends Match {
 	private String[] fichas;
-	private User jugadorConElTurno;
 	private int contador = 0;
-	private boolean ganador = false;
+	private boolean empate = false;
 
 	public TresEnRayaMatch() {
 		super();
@@ -19,16 +17,9 @@ public class TresEnRayaMatch extends Match {
 	}
 
 	@Override
-	public void start() {
-		this.started = true;
-		super.notifyStart();
-	}
-
-	@Override
 	protected JSONObject startData(User player) {
 		JSONObject jso = new JSONObject();
 		JSONArray squaremesa = new JSONArray();
-		this.jugadorConElTurno = turno(players);
 		for (int i = 0; i < 9; i++) {
 			squaremesa.put(this.fichas[i]);
 		}
@@ -46,6 +37,7 @@ public class TresEnRayaMatch extends Match {
 	@Override
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
 		int posicion = jsoMovimiento.getInt("posicion");
+		JSONObject jso = new JSONObject();
 		if (jugadorQueHaMovido == this.players.get(0)) {
 			this.fichas[posicion] = "X";
 			this.jugadorConElTurno = this.players.get(1);
@@ -53,21 +45,26 @@ public class TresEnRayaMatch extends Match {
 			this.fichas[posicion] = "O";
 			this.jugadorConElTurno = this.players.get(0);
 		}
+		jso.put("type", "actualizartablero");
+		jso.put("posicion", posicion);
+		jso.put("estado", this.fichas[posicion]);
+		for (User user : this.players)
+			user.send(jso);
 	}
 
 	@Override
-	public User turno(List<User> players) {
-		User user;
-		if (this.jugadorConElTurno == null) {
-			user = this.players.get((int) Math.random());
-		} else {
-			user = this.jugadorConElTurno;
-		}
-		return user;
+	public User turno() {
+		return new Random().nextBoolean() ? this.players.get(0) : this.players.get(1);
 	}
 
 	@Override
 	protected void comprobarTurno(User jugadorQueHaMovido) throws Exception {
+		if (this.ganador != null || empate) {
+			JSONObject jso = new JSONObject();
+			jso.put("type", "fin");
+			jugadorQueHaMovido.send(jso);
+			throw new Exception("Partida Finalizada");
+		}
 		if (this.jugadorConElTurno != jugadorQueHaMovido) {
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Turno");
@@ -90,64 +87,75 @@ public class TresEnRayaMatch extends Match {
 
 	@Override
 	protected void notificarAClientes(JSONObject jsoMovimiento) {
-		int posicion = jsoMovimiento.getInt("posicion");
 		JSONObject jso = new JSONObject();
-		jso.put("type", "actualizartablero");
-		jso.put("posicion", posicion);
-		jso.put("estado", this.fichas[posicion]);
-		jso.put("turno", this.jugadorConElTurno.getUserName());
-		for (User user : this.players)
-			user.send(jso);
-	}
-
-	protected void comprobarjugada(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
-		contador++;
-		JSONObject jso = new JSONObject();
-		String estado = null;
-		if (jugadorQueHaMovido == this.players.get(0)) {
-			estado = "X";
-		} else {
-			estado = "O";
-		}
-		if (this.contador > 4 && this.ganador == false) {
-			this.ganador = compruebaGanador(jsoMovimiento, estado);
-			if (this.ganador == true) {
-				jso.put("type", "ganador");
-				jso.put("jugador", jugadorQueHaMovido.getUserName());
-			}
-		} else if (this.contador == 9 && this.ganador == false) {
+		if (ganador !=null) {
+			jso.put("type", "ganador");
+			jso.put("ganador",this.ganador.getUserName());
+		}else if (empate) {
 			jso.put("type", "empate");
+		}else {
+			jso.put("type","cambioturno");
+			jso.put("turno", this.jugadorConElTurno.getUserName());
 		}
 		for (User user : this.players)
 			user.send(jso);
 	}
 
-	public boolean compruebaGanador(JSONObject jsoMovimiento, String estado) {
+	protected void comprobarjugada(User jugadorQueHaMovido) {
+		contador++;
+		if (this.contador > 4 && this.ganador == null) {
+			this.ganador = compruebaGanador(jugadorQueHaMovido);
+		}
+		if (this.contador == 9 && this.ganador == null)
+			this.empate = true;
+		
+	}
 
-		// valida por fila
-		for (int i = 0; i < this.fichas.length; i = i + 3) {
-			if (this.fichas[i].equals(estado) && this.fichas[i + 1].equals(estado)
-					&& this.fichas[i + 2].equals(estado)) {
-				return ganador = true;
-			}
+	public User compruebaGanador(User jugadorQueHaMovido) {
+		boolean fila = comprobarfila();
+		boolean columna = comprobarcolumna();
+		boolean diagonalderecha = comprobardiagonalderecha();
+		boolean diagonalizquierda = comprobardiagonalizquierda();
+		
+		if (fila || columna || diagonalderecha || diagonalizquierda) {
+			return jugadorQueHaMovido;
 		}
 
-		// validacion por columna
+		return null;
+	}
+
+	private boolean comprobardiagonalizquierda() {
+		boolean ganador = false;
+		if (this.fichas[2].equals(this.fichas[4]) && this.fichas[2].equals(this.fichas[6])) {
+			ganador = true;
+		}
+		return ganador;
+	}
+
+	private boolean comprobardiagonalderecha() {
+		boolean ganador = false;
+		if (this.fichas[0].equals(this.fichas[4]) && this.fichas[0].equals(this.fichas[8])) {
+			ganador = true;
+		}
+		return ganador;
+	}
+
+	private boolean comprobarcolumna() {
+		boolean ganador = false;
 		for (int i = 0; i < 3; i++) {
-			if (this.fichas[i].equals(estado) && this.fichas[i + 3].equals(estado)
-					&& this.fichas[i + 6].equals(estado)) {
+			if (this.fichas[i].equals(this.fichas[i+3]) && this.fichas[i].equals(this.fichas[i+6])) {
 				return ganador = true;
 			}
 		}
+		return ganador;
+	}
 
-		// validación diagonal a derechas
-		if (this.fichas[0].equals(estado) && this.fichas[4].equals(estado) && this.fichas[8].equals(estado)) {
-			return ganador = true;
-		}
-
-		// validación diagonal a izquierdas
-		if (this.fichas[2].equals(estado) && this.fichas[4].equals(estado) && this.fichas[5].equals(estado)) {
-			return ganador = true;
+	private boolean comprobarfila() {
+		boolean ganador = false;
+		for (int i = 0; i < this.fichas.length; i = i + 3) {
+			if (this.fichas[i].equals(this.fichas[i+1]) && this.fichas[i].equals(this.fichas[i+2])) {
+				return ganador = true;
+			}
 		}
 		return ganador;
 	}

@@ -15,6 +15,7 @@ public abstract class Match {
 	protected boolean started;
 	private int readyPlayers;
 	private Game game;
+	protected User jugadorConElTurno, ganador;
 
 	public Match() {
 		this.id = UUID.randomUUID().toString();
@@ -36,8 +37,6 @@ public abstract class Match {
 		return id;
 	}
 
-	public abstract void start();
-
 	public JSONObject toJSON() {
 		JSONObject jso = new JSONObject();
 		jso.put("idMatch", this.id);
@@ -45,6 +44,9 @@ public abstract class Match {
 		JSONArray jsa = new JSONArray();
 		for (User user : this.players)
 			jsa.put(user.toJSON());
+		if (this.jugadorConElTurno != null) {
+			jso.put("turno", this.jugadorConElTurno.getUserName());
+		}
 		jso.put("players", jsa);
 		return jso;
 	}
@@ -52,7 +54,6 @@ public abstract class Match {
 	public void notifyStart() {
 		JSONObject jso = this.toJSON();
 		jso.put("type", "matchStarted");
-		jso.put("turno", turno(this.players).getUserName());
 		for (User player : this.players) {
 			jso.put("startData", startData(player));
 			player.send(jso);
@@ -70,27 +71,33 @@ public abstract class Match {
 	}
 
 	public boolean ready() {
-		return this.readyPlayers == game.requiredPlayers;
+		this.started = this.readyPlayers==game.requiredPlayers;
+		if (this.started)
+			this.jugadorConElTurno = turno();
+		return this.started;
 	}
 
 	public void mover(JSONObject jsoMovimiento, Session session) throws Exception {
-		User jugadorQueHaMovido = null;
-		for (User user : this.players)
-			if (user.getSession() == session) {
-				jugadorQueHaMovido = user;
-				break;
-			}
+		User jugadorQueHaMovido = jugadorQueHaMovido(session);
 		comprobarTurno(jugadorQueHaMovido);
-		comprobarLegalidad(jsoMovimiento,jugadorQueHaMovido);
+		comprobarLegalidad(jsoMovimiento, jugadorQueHaMovido);
 		actualizarTablero(jsoMovimiento, jugadorQueHaMovido);
-		comprobarjugada(jsoMovimiento,jugadorQueHaMovido);
+		comprobarjugada(jugadorQueHaMovido);
 		notificarAClientes(jsoMovimiento);
 	}
-	
-    protected abstract void comprobarjugada(JSONObject jsoMovimiento, User jugadorQueHaMovido);
 
-	public abstract User turno(List<User> players);
-	
+	private User jugadorQueHaMovido(Session session) {
+		for (User user : this.players)
+			if (user.getSession() == session) {
+				return user;
+			}
+		return null;
+	}
+
+	protected abstract void comprobarjugada(User jugadorQueHaMovido);
+
+	public abstract User turno();
+
 	protected abstract void comprobarTurno(User jugadorQueHaMovido) throws Exception;
 
 	protected abstract void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception;
@@ -98,6 +105,5 @@ public abstract class Match {
 	protected abstract void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido);
 
 	protected abstract void notificarAClientes(JSONObject jsoMovimiento);
-	
 
 }
