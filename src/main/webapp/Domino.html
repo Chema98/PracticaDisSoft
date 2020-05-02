@@ -18,9 +18,15 @@
 <span data-bind="html : $data"></span><br>
 <!-- /ko -->
 
+<br>Es el turno de 
+<span data-bind= "html : turno"></span><br>
 
 <br><br>
-Mis Fichas
+Mis Fichas 
+<button>
+	<label> Robar</label>
+</button>
+<br>
 <!-- ko foreach : { data: fichasJugador, as : "ficha" } -->
 <button data-bind="click : ponerFicha">
 	<label>[ </label>
@@ -32,6 +38,8 @@ Mis Fichas
 <!-- /ko -->
 
 <br><br>
+MESA
+<br>
 <!-- ko foreach : { data: mesa, as : "ficha" } -->
 <button>
 	<label>[ </label>

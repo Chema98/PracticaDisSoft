@@ -15,14 +15,6 @@ function ViewModel() {
         self.mensaje("Esperando oponente para la partida " + idMatch);
     }
     
-    self.ponerFicha = function(FichaDomino){
-    	var msg={
-    			type : "movimiento",
-    			ficha : ficha
-    	};
-    	self.ws.send(JSON.stringify(msg));
-    }
-    
     var url = "ws://localhost:8600/juegos";
     self.ws = new WebSocket(url);
 
@@ -41,17 +33,17 @@ function ViewModel() {
         data = JSON.parse(data);
         if (data.type == "matchStarted") {
             self.mensaje("La partida ha empezado");
-            /*usuarios de la partida*/
+            /* usuarios de la partida */
             var players = data.players;
             for (var i=0; i<players.length; i++) {
                 var player = players[i];
                 self.usuarios.push(player.userName);
             }
-            /*fichas del usuario*/
+            /* fichas del usuario */
             var fichas = data.startData.data;
             for (var i=0; i< fichas.length; i++)
-                self.fichasJugador.push(fichas[i]);
-            /*turno al empezar*/
+                self.fichasJugador.push(new Ficha(fichas[i].numero1,fichas[i].numero2));
+            /* turno al empezar */
             var turno = data.turno;
             self.turno(turno)
             console.log(data);
@@ -78,6 +70,23 @@ function ViewModel() {
         }
     }
     
+}
+
+class Ficha {
+	constructor(numero1,numero2){
+		this.numero1 = numero1;
+		this.numero2= numero2;
+	}
+	
+	ponerFicha(){
+		var msg={
+    			type : "movimiento",
+    			numero1 : this.numero1,
+    			numero2 : this.numero2,
+    			idMatch : sessionStorage.idMatch
+    	};
+    	self.ws.send(JSON.stringify(msg));
+	}
 }
 
 var vm = new ViewModel();

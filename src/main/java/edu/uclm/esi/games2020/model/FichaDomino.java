@@ -17,4 +17,14 @@ public class FichaDomino {
 		jso.put("numero2", this.numero2);
 		return jso;
 	}
+
+	public int getNumero1() {
+		return numero1;
+	}
+
+	public int getNumero2() {
+		return numero2;
+	}
+	
+	
 }

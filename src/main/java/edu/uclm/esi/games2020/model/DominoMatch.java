@@ -1,5 +1,6 @@
 package edu.uclm.esi.games2020.model;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -9,6 +10,7 @@ public class DominoMatch extends Match {
 	private int contador = 0;
 	private boolean empate = false;
 	private BarajaDomino fichas;
+	private ArrayList <FichaDomino> mesa = new ArrayList<FichaDomino>();
 
 	public DominoMatch() {
 		super();
@@ -95,7 +97,23 @@ public class DominoMatch extends Match {
 
 	private boolean comprobarjugada(JSONObject jsoMovimiento) {
 		boolean valida=false;
+		FichaDomino auxiliar = new FichaDomino(jsoMovimiento.getInt("numero1"),jsoMovimiento.getInt("numero2"));
+		if (this.mesa.isEmpty()) {
+			valida=true;
+		}else if (comprobarFicha(this.mesa,auxiliar)) {
+			valida=true;
+		}
 		return valida;
+	}
+
+	private boolean comprobarFicha(ArrayList<FichaDomino> mesa, FichaDomino auxiliar) {
+		boolean movimientovalido =false;
+		FichaDomino primera = mesa.get(0);
+		FichaDomino ultima = mesa.get(mesa.size());
+		if(auxiliar.getNumero2() == primera.getNumero1() || auxiliar.getNumero1() == ultima.getNumero2()) {
+			movimientovalido = true;
+		}
+		return movimientovalido;
 	}
 
 	@Override
