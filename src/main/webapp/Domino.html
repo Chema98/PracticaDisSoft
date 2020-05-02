@@ -22,6 +22,17 @@
 <br><br>
 Mis Fichas
 <!-- ko foreach : { data: fichasJugador, as : "ficha" } -->
+<button data-bind="click : ponerFicha">
+	<label>[ </label>
+	<label data-bind="html : numero1"></label>
+	<label>, </label>
+	<label data-bind="html : numero2"></label>
+	<label>]</label>
+</button>
+<!-- /ko -->
+
+<br><br>
+<!-- ko foreach : { data: mesa, as : "ficha" } -->
 <button>
 	<label>[ </label>
 	<label data-bind="html : numero1"></label>

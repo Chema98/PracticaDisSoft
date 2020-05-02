@@ -52,26 +52,22 @@ public class EscobaMatch extends Match {
 	}
 
 	@Override
-	protected void comprobarjugada(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
-		// TODO Auto-generated method stub
+	protected void comprobarjugada(User jugadorQueHaMovido) {
 		
 	}
 
 	@Override
-	public User turno(List<User> players) {
-		// TODO Auto-generated method stub
+	public User turno() {
 		return null;
 	}
 
 	@Override
 	protected void comprobarTurno(User jugadorQueHaMovido) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -87,15 +83,4 @@ public class EscobaMatch extends Match {
 		
 	}
 
-	@Override
-	protected void comprobarjugada(User jugadorQueHaMovido) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public User turno() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

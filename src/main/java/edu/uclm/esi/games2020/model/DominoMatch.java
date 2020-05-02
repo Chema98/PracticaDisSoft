@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DominoMatch extends Match {
-	private User jugadorConElTurno;
+	private int contador = 0;
 	private boolean empate = false;
 	private BarajaDomino fichas;
 
@@ -50,8 +50,17 @@ public class DominoMatch extends Match {
 
 	@Override
 	protected void comprobarjugada(User jugadorQueHaMovido) {
-
+		contador++;
+		if (this.contador > 12 && this.ganador == null) {
+			this.ganador = compruebaGanador(jugadorQueHaMovido);
+		}
 	}
+
+	private User compruebaGanador(User jugadorQueHaMovido) {
+		boolean ganador = false;
+		return null;
+	}
+	
 
 	@Override
 	public User turno() {
@@ -76,7 +85,7 @@ public class DominoMatch extends Match {
 
 	@Override
 	protected void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception {
-		if (comprobarjugada(jsoMovimiento)) {
+		if (!comprobarjugada(jsoMovimiento)) {
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Movimiento");
 			jugadorQueHaMovido.send(jso);
@@ -85,8 +94,8 @@ public class DominoMatch extends Match {
 	}
 
 	private boolean comprobarjugada(JSONObject jsoMovimiento) {
-		
-		return false;
+		boolean valida=false;
+		return valida;
 	}
 
 	@Override

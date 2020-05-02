@@ -15,6 +15,13 @@ function ViewModel() {
         self.mensaje("Esperando oponente para la partida " + idMatch);
     }
     
+    self.ponerFicha = function(FichaDomino){
+    	var msg={
+    			type : "movimiento",
+    			ficha : ficha
+    	};
+    	self.ws.send(JSON.stringify(msg));
+    }
     
     var url = "ws://localhost:8600/juegos";
     self.ws = new WebSocket(url);
@@ -54,17 +61,20 @@ function ViewModel() {
         	self.mensaje("Movimiento no permitido, prueba otra vez.");
         } else if (data.type == "actualizartablero") {
         	/* actualizo la ficha indicada */
+        	var posicion = data.posicion;
+        	self.mesa(data.ficha);
         	
         	
-        	/* actualizo el turno */
+        } else if (data.type =="cambioturno"){
         	var turno = data.turno;
             self.turno(turno);
         } else if (data.type=="ganador"){
-        	var ganador = data.jugador;
+        	var ganador = data.ganador;
         	self.mensaje("Ha ganado " + ganador + ",enhorabuena");
         }else if (data.type=="empate"){
-        	var ganador = data.jugador;
-        	self.mensaje("No ha habido ganador\n EMPATE");	
+        	self.mensaje("EMPATE");	
+        }else if (data.type=="fin"){
+        	self.mensaje("La partida ya ha finalizado.")
         }
     }
     
