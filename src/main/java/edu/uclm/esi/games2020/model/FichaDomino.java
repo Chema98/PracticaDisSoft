@@ -10,7 +10,7 @@ public class FichaDomino {
 		this.numero1 = numero1;
 		this.numero2 = numero2;
 	}
-	
+
 	public JSONObject toJSON() {
 		JSONObject jso = new JSONObject();
 		jso.put("numero1", this.numero1);
