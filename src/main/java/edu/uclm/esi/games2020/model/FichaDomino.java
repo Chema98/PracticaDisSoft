@@ -5,6 +5,9 @@ import org.json.JSONObject;
 public class FichaDomino {
 	private int numero1;
 	private int numero2;
+
+	public FichaDomino() {
+	}
 	
 	public FichaDomino(int numero1, int numero2) {
 		this.numero1 = numero1;

@@ -25,8 +25,15 @@ function ViewModel() {
         };
         self.ws.send(JSON.stringify(msg));
     }
-
- 
+    
+    self.robar = function(event) {
+    	var msg = {
+            type : "movimiento",
+            subtype  : "robar",
+            idMatch : sessionStorage.idMatch
+        };
+        self.ws.send(JSON.stringify(msg));
+    }
 
     self.ws.onmessage = function(event) {
         var data = event.data;
@@ -49,7 +56,11 @@ function ViewModel() {
             console.log(data);
         } else if (data.type == "Turno"){ 
         	self.mensaje("No es tu turno");
-        } else if (data.type == "Movimiento"){ 
+        }else if (data.type == "Ficha Robada"){ 
+        	self.mensaje("Ficha Robada.");
+        } else if (data.type == "Fichas"){ 
+        	self.mensaje("No quedan fichas en la Baraja.");
+        }else if (data.type == "Movimiento"){ 
         	self.mensaje("Movimiento no permitido, prueba otra vez.");
         } else if (data.type == "actualizartablero") {
         	/* actualizo la ficha indicada */
@@ -81,6 +92,7 @@ class Ficha {
 	ponerFicha(){
 		var msg={
     			type : "movimiento",
+    			subtype : "ponerFicha",
     			numero1 : this.numero1,
     			numero2 : this.numero2,
     			idMatch : sessionStorage.idMatch

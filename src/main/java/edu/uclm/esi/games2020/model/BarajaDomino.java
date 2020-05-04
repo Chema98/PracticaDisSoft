@@ -31,4 +31,8 @@ public class BarajaDomino {
 	public FichaDomino getFichaDomino() {
 		return this.fichas.remove(0);
 	}
+	
+	public boolean vacio() {
+		return fichas.isEmpty();
+	}
 }
