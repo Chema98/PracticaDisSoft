@@ -63,11 +63,13 @@ function ViewModel() {
         }else if (data.type == "Movimiento"){ 
         	self.mensaje("Movimiento no permitido, prueba otra vez.");
         } else if (data.type == "actualizartablero") {
-        	/* actualizo la ficha indicada */
         	var posicion = data.posicion;
-        	self.mesa(data.ficha);
-        	
-        	
+        	var f = new Ficha(data.numero1,data.numero2);
+        	if (posicion == "delante"){
+        		
+        	}else{
+        		
+        	}
         } else if (data.type =="cambioturno"){
         	var turno = data.turno;
             self.turno(turno);

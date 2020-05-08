@@ -183,7 +183,7 @@ public class DominoMatch extends Match {
 		}else
 			mesa.add(nueva);
 		jso.put("posicion",this.colocar);
-		jso.put("ficha", this.nueva);
+		jso.put("ficha", this.nueva.toJSON());
 		for (User user : this.players)
 			user.send(jso);
 	}
