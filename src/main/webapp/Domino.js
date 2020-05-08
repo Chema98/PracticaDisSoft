@@ -4,7 +4,7 @@ function ViewModel() {
     self.usuarios = ko.observableArray([]);
     self.mesa = ko.observableArray([]);
     self.fichasJugador = ko.observableArray([]);
-    self.turno = ko.observable();
+    self.turno = ko.observable("");
     
     var idMatch = sessionStorage.idMatch;
     var started = JSON.parse(sessionStorage.started);
@@ -21,6 +21,15 @@ function ViewModel() {
     self.ws.onopen = function(event) {
         var msg = {
             type : "ready",
+            idMatch : sessionStorage.idMatch
+        };
+        self.ws.send(JSON.stringify(msg));
+    }
+    
+    self.pasar = function(event) {
+    	var msg = {
+            type : "movimiento",
+            subtype  : "pasar",
             idMatch : sessionStorage.idMatch
         };
         self.ws.send(JSON.stringify(msg));
@@ -70,6 +79,7 @@ function ViewModel() {
         	if (posicion == "delante"){
         		self.mesa.unshift(f);
         	}else{
+        		/*[5,6][4,2] */
         		self.mesa.push(f);        		
         	}
         } else if (data.type =="cambioturno"){
@@ -93,10 +103,26 @@ class Ficha {
 		this.numero2= numero2;
 	}
 	
+	igual(otraFicha) {
+		if (this.numero1==otraFicha.numero1 && this.numero2==otraFicha.numero2)
+			return true;
+		if (this.numero1==otraFicha.numero2 && this.numero2==otraFicha.numero1)
+			return true;
+		return false;
+	}
+	
 	ponerFicha(){
+		var posicion = 0;
+		for (var i=0; i<self.fichasJugador.length; i++) {
+			if (self.fichasJugador()[i].igual(this)) {
+				posicion = i;
+				break;
+			} 
+		}
 		var msg={
     			type : "movimiento",
     			subtype : "ponerFicha",
+    			posicion : posicion,
     			numero1 : this.numero1,
     			numero2 : this.numero2,
     			idMatch : sessionStorage.idMatch

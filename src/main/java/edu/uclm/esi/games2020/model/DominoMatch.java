@@ -1,23 +1,18 @@
 package edu.uclm.esi.games2020.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.websocket.Session;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DominoMatch extends Match {
-	private int contador = 0;
+	private int contadorpasar = 0;
 	private boolean empate = false;
 	private BarajaDomino fichas;
 	private ArrayList<FichaDomino> mesa = new ArrayList<FichaDomino>();
-	private ConcurrentHashMap<Session, ArrayList<FichaDomino>> fichasjugador = new ConcurrentHashMap<Session, ArrayList<FichaDomino>>();
 	private String colocar;
 	private FichaDomino nueva = new FichaDomino();
-	
+
 	public DominoMatch() {
 		super();
 		this.fichas = new BarajaDomino();
@@ -35,35 +30,30 @@ public class DominoMatch extends Match {
 	@Override
 	protected JSONObject startData(User player) {
 		/* Fichas del usuario */
-		ArrayList<FichaDomino> fj = new ArrayList<FichaDomino>();
+		DominoState state = (DominoState) player.getState();
 		for (int i = 0; i < 7; i++) {
 			FichaDomino ficha = this.fichas.getFichaDomino();
-			fj.add(ficha);
+			state.addFicha(ficha);
 		}
-
-		this.fichasjugador.put(player.getSession(), fj);
 
 		JSONObject jso = new JSONObject();
-		JSONArray jsaFichasDelJugador = new JSONArray();
-		for (FichaDomino ficha : fj) {
-			jsaFichasDelJugador.put(ficha.toJSON());
-		}
-		jso.put("data", jsaFichasDelJugador);
+		jso.put("data", state.getJSONArrayFichas());
 		return jso;
 	}
 
 	@Override
 	protected void comprobarjugada(User jugadorQueHaMovido) {
-		contador++;
-		if (this.contador > 12 && this.ganador == null) {
+		if (this.ganador == null) {
 			this.ganador = compruebaGanador(jugadorQueHaMovido);
 		}
-		/* preguntar a macario sobre el empate */
+		if (contadorpasar == 2) {
+
+		}
 	}
 
 	private User compruebaGanador(User jugadorQueHaMovido) {
-		ArrayList<FichaDomino> auxiliar = new ArrayList<FichaDomino>();
-		auxiliar = this.fichasjugador.get(jugadorQueHaMovido.getSession());
+		DominoState state = (DominoState) jugadorQueHaMovido.getState();
+		List<FichaDomino> auxiliar = state.getFichas();
 		if (auxiliar.isEmpty()) {
 			return jugadorQueHaMovido;
 		}
@@ -101,6 +91,7 @@ public class DominoMatch extends Match {
 				jugadorQueHaMovido.send(jso);
 				throw new Exception("Movimiento no permitido");
 			}
+			contadorpasar = 0;
 		} else if (subtype.equals("robar")) {
 			if (this.fichas.vacio()) {
 				JSONObject jso = new JSONObject();
@@ -109,14 +100,16 @@ public class DominoMatch extends Match {
 				throw new Exception("No quedan fichas");
 			}
 			FichaDomino robar = this.fichas.getFichaDomino();
-			ArrayList<FichaDomino> fj = this.fichasjugador.get(jugadorQueHaMovido.getSession());
-			fj.add(robar);
-			this.fichasjugador.replace(jugadorQueHaMovido.getSession(),
-					this.fichasjugador.get(jugadorQueHaMovido.getSession()), fj);
+			DominoState state = (DominoState) jugadorQueHaMovido.getState();
+			state.addFicha(robar);
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Ficha Robada");
 			jso.put("ficha", robar.toJSON());
 			jugadorQueHaMovido.send(jso);
+		} else if (subtype.equals("pasar")) {
+			if (this.fichas.vacio()) {
+				contadorpasar++;
+			}
 		}
 	}
 
@@ -136,11 +129,11 @@ public class DominoMatch extends Match {
 	private boolean comprobarFicha(ArrayList<FichaDomino> mesa, FichaDomino auxiliar) {
 		boolean movimientovalido = false;
 		FichaDomino primera = mesa.get(0);
-		FichaDomino ultima = mesa.get(mesa.size()-1);
-		boolean primeraficha = comprobarprimeraficha(auxiliar,primera);
-		boolean ultimaficha = comprobarultimaficha(auxiliar,ultima);
+		FichaDomino ultima = mesa.get(mesa.size() - 1);
+		boolean primeraficha = comprobarprimeraficha(auxiliar, primera);
+		boolean ultimaficha = comprobarultimaficha(auxiliar, ultima);
 		if (primeraficha || ultimaficha) {
-			movimientovalido=true;
+			movimientovalido = true;
 		}
 
 		return movimientovalido;
@@ -153,7 +146,7 @@ public class DominoMatch extends Match {
 			this.nueva = auxiliar;
 			valida = true;
 		} else if (auxiliar.getNumero2() == ultima.getNumero2()) {
-			FichaDomino poner = new FichaDomino(auxiliar.getNumero2(),auxiliar.getNumero1());
+			FichaDomino poner = new FichaDomino(auxiliar.getNumero2(), auxiliar.getNumero1());
 			this.colocar = "detras";
 			this.nueva = poner;
 			valida = true;
@@ -168,7 +161,7 @@ public class DominoMatch extends Match {
 			this.nueva = auxiliar;
 			valida = true;
 		} else if (auxiliar.getNumero1() == primera.getNumero1()) {
-			FichaDomino poner = new FichaDomino(auxiliar.getNumero2(),auxiliar.getNumero1());
+			FichaDomino poner = new FichaDomino(auxiliar.getNumero2(), auxiliar.getNumero1());
 			this.colocar = "delante";
 			this.nueva = poner;
 			valida = true;
@@ -180,25 +173,25 @@ public class DominoMatch extends Match {
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
 		String subtype = jsoMovimiento.getString("subtype");
 		if (subtype.equals("ponerFicha")) {
-		JSONObject jso = new JSONObject();
-		jso.put("type", "actualizartablero");
-		if (colocar.equals("delante")) {
-			mesa.add(0,nueva);
-			
-		}else
-			mesa.add(nueva);
-		jso.put("posicion",this.colocar);
-		jso.put("ficha", this.nueva.toJSON());
-		for (User user : this.players)
-			user.send(jso);
+			JSONObject jso = new JSONObject();
+			jso.put("type", "actualizartablero");
+			if (colocar.equals("delante")) {
+				mesa.add(0, nueva);
+
+			} else
+				mesa.add(nueva);
+			jso.put("posicion", this.colocar);
+			jso.put("ficha", this.nueva.toJSON());
+			for (User user : this.players)
+				user.send(jso);
 		}
 		cambiarTurno(jugadorQueHaMovido);
 	}
 
 	private void cambiarTurno(User jugadorQueHaMovido) {
-		if (jugadorQueHaMovido == this.players.get(0)){
+		if (jugadorQueHaMovido == this.players.get(0)) {
 			this.jugadorConElTurno = this.players.get(1);
-		}else {
+		} else {
 			this.jugadorConElTurno = this.players.get(0);
 		}
 	}
