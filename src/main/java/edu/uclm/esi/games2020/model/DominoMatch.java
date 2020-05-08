@@ -176,10 +176,16 @@ public class DominoMatch extends Match {
 
 	@Override
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
+		JSONObject jso = new JSONObject();
+		jso.put("type", "actualizartablero");
 		if (colocar.equals("delante")) {
 			mesa.add(0,nueva);
 		}else
-			mesa.add(nueva);			
+			mesa.add(nueva);
+		jso.put("posicion",this.colocar);
+		jso.put("ficha", this.nueva);
+		for (User user : this.players)
+			user.send(jso);
 	}
 
 	@Override
