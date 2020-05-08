@@ -57,6 +57,8 @@ function ViewModel() {
         } else if (data.type == "Turno"){ 
         	self.mensaje("No es tu turno");
         }else if (data.type == "Ficha Robada"){ 
+        	var f = new Ficha(data.ficha.numero1,data.ficha.numero2);
+        	self.fichasJugador.push(f);
         	self.mensaje("Ficha Robada.");
         } else if (data.type == "Fichas"){ 
         	self.mensaje("No quedan fichas en la Baraja.");
@@ -64,11 +66,11 @@ function ViewModel() {
         	self.mensaje("Movimiento no permitido, prueba otra vez.");
         } else if (data.type == "actualizartablero") {
         	var posicion = data.posicion;
-        	var f = new Ficha(data.numero1,data.numero2);
+        	var f = new Ficha(data.ficha.numero1,data.ficha.numero2);
         	if (posicion == "delante"){
-        		
+        		self.mesa.unshift(f);
         	}else{
-        		
+        		self.mesa.push(f);        		
         	}
         } else if (data.type =="cambioturno"){
         	var turno = data.turno;

@@ -115,8 +115,8 @@ public class DominoMatch extends Match {
 					this.fichasjugador.get(jugadorQueHaMovido.getSession()), fj);
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Ficha Robada");
+			jso.put("ficha", robar.toJSON());
 			jugadorQueHaMovido.send(jso);
-			throw new Exception("Ficha Robada");
 		}
 	}
 
@@ -125,6 +125,8 @@ public class DominoMatch extends Match {
 		FichaDomino auxiliar = new FichaDomino(jsoMovimiento.getInt("numero1"), jsoMovimiento.getInt("numero2"));
 		if (this.mesa.isEmpty()) {
 			valida = true;
+			this.colocar = "delante";
+			this.nueva = auxiliar;
 		} else if (comprobarFicha(this.mesa, auxiliar)) {
 			valida = true;
 		}
@@ -134,7 +136,7 @@ public class DominoMatch extends Match {
 	private boolean comprobarFicha(ArrayList<FichaDomino> mesa, FichaDomino auxiliar) {
 		boolean movimientovalido = false;
 		FichaDomino primera = mesa.get(0);
-		FichaDomino ultima = mesa.get(mesa.size());
+		FichaDomino ultima = mesa.get(mesa.size()-1);
 		boolean primeraficha = comprobarprimeraficha(auxiliar,primera);
 		boolean ultimaficha = comprobarultimaficha(auxiliar,ultima);
 		if (primeraficha || ultimaficha) {
@@ -162,7 +164,7 @@ public class DominoMatch extends Match {
 	private boolean comprobarprimeraficha(FichaDomino auxiliar, FichaDomino primera) {
 		boolean valida = false;
 		if (auxiliar.getNumero2() == primera.getNumero1()) {
-			this.colocar = "detras";
+			this.colocar = "delante";
 			this.nueva = auxiliar;
 			valida = true;
 		} else if (auxiliar.getNumero1() == primera.getNumero1()) {
@@ -176,16 +178,29 @@ public class DominoMatch extends Match {
 
 	@Override
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
+		String subtype = jsoMovimiento.getString("subtype");
+		if (subtype.equals("ponerFicha")) {
 		JSONObject jso = new JSONObject();
 		jso.put("type", "actualizartablero");
 		if (colocar.equals("delante")) {
 			mesa.add(0,nueva);
+			
 		}else
 			mesa.add(nueva);
 		jso.put("posicion",this.colocar);
 		jso.put("ficha", this.nueva.toJSON());
 		for (User user : this.players)
 			user.send(jso);
+		}
+		cambiarTurno(jugadorQueHaMovido);
+	}
+
+	private void cambiarTurno(User jugadorQueHaMovido) {
+		if (jugadorQueHaMovido == this.players.get(0)){
+			this.jugadorConElTurno = this.players.get(1);
+		}else {
+			this.jugadorConElTurno = this.players.get(0);
+		}
 	}
 
 	@Override
