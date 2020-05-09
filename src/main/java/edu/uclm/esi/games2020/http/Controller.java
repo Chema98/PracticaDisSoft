@@ -1,6 +1,5 @@
 package edu.uclm.esi.games2020.http;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,25 +30,23 @@ public class Controller {
 		session.setAttribute("user", user);
 	}
 	
+	@PostMapping(value = "/register")
+	public void register(HttpSession session, @RequestBody Map<String, Object> credenciales) throws Exception {
+		JSONObject jso = new JSONObject(credenciales);
+		String email = jso.getString("email");
+		String userName=jso.getString("userName");
+		String pwd1=jso.getString("pwd1");
+		String pwd2=jso.getString("pwd2");
+		if (!pwd1.equals(pwd2)) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Las passwords no coinciden");
+		} else {
+			Manager.get().register(email, userName, pwd1);
+		}
+	}
+	
 	@GetMapping("/getGames")
 	public JSONArray getGames(HttpSession session) throws Exception {
 		return Manager.get().getGames();
-	}
-	
-	@PostMapping(value = "/joinToMatchConMap", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> joinToMatchConMap(HttpSession session, HttpServletResponse response, @RequestBody Map<String, Object> info) {
-		User user = (User) session.getAttribute("user");
-		if (user==null) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Identíficate antes de jugar");
-		} else {
-			JSONObject jso = new JSONObject(info);
-			String game = jso.getString("game");
-			Match match = Manager.get().joinToMatch(user, game);
-			HashMap<String, Object> resultado = new HashMap<>();
-			resultado.put("type", "match");
-			resultado.put("match", match);
-			return resultado;
-		}
 	}
 	
 	@PostMapping(value = "/joinToMatch", produces=MediaType.APPLICATION_JSON_VALUE)

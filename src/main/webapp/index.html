@@ -87,7 +87,7 @@ function login() {
 	
 	var data = {
 		data : JSON.stringify(info),
-		url : "jsps/login.jsp",
+		url : "login",
 		type : "post",
 		contentType: 'application/json',
 		dataType : 'json',
@@ -111,7 +111,7 @@ function register() {
 	};
 	var data = {
 			data : JSON.stringify(info),
-			url : "jsps/register.jsp",
+			url : "register",
 			type : "post",
 			contentType: 'application/json',
 			dataType : 'json',
@@ -123,16 +123,6 @@ function register() {
 			}
 		};
 		$.ajax(data);
-}
-
-function requestToken() {
-	alert("En requestToken");
-}
-
-function logout() {
-	$.get("jsps/logout.jsp", function() {
-		$("#logout").hide();
-	});
 }
 </script>
 
