@@ -47,12 +47,12 @@ public class Manager {
 		this.games.put(domino.getName(), domino);
 	}
 
-	public JSONObject joinToMatch(User user, String gameName) {
+	public Match joinToMatch(User user, String gameName) {
 		Game game = this.games.get(gameName);
 		Match match = game.joinToMatch(user);
 		if (!pendingMatches.containsKey(match.getId()))
 			pendingMatches.put(match.getId(), match);
-		return match.toJSON();
+		return match;
 	}
 
 	private static class ManagerHolder {
