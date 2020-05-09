@@ -47,7 +47,22 @@ public class DominoMatch extends Match {
 			this.ganador = compruebaGanador(jugadorQueHaMovido);
 		}
 		if (contadorpasar == 2) {
-			empate=true;
+			this.ganador = calcularGanador();
+			if(this.ganador == null) {
+				empate=true;
+			}
+		}
+	}
+
+	private User calcularGanador() {
+		DominoState jugador1 = (DominoState) this.players.get(0).getState();
+		DominoState jugador2 = (DominoState) this.players.get(1).getState();
+		if(jugador1.calcularPuntos()> jugador2.calcularPuntos()) {
+			return this.players.get(0);
+		}else if(jugador1.calcularPuntos() < jugador2.calcularPuntos()) {
+			return this.players.get(1);
+		} else {
+			return null;
 		}
 	}
 

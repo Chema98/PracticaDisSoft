@@ -33,5 +33,13 @@ public class DominoState implements IState {
 	public void eliminarFicha(int posicion) {
 		this.fichas.remove(posicion);	
 	}
+	
+	public int calcularPuntos() {
+		int puntos=0;
+		for( FichaDomino ficha : this.fichas) {
+			puntos += (ficha.getNumero1() + ficha.getNumero2());
+		}
+		return puntos;
+	}
 
 }
