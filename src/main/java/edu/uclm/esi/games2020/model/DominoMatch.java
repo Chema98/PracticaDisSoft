@@ -42,12 +42,12 @@ public class DominoMatch extends Match {
 	}
 
 	@Override
-	protected void comprobarjugada(User jugadorQueHaMovido) {
+	protected void comprobarjugada(User jugadorQueHaMovido) { 
 		if (this.ganador == null) {
 			this.ganador = compruebaGanador(jugadorQueHaMovido);
 		}
 		if (contadorpasar == 2) {
-
+			empate=true;
 		}
 	}
 
@@ -173,19 +173,29 @@ public class DominoMatch extends Match {
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
 		String subtype = jsoMovimiento.getString("subtype");
 		if (subtype.equals("ponerFicha")) {
-			JSONObject jso = new JSONObject();
-			jso.put("type", "actualizartablero");
+			int posicion = jsoMovimiento.getInt("posicion");
+			DominoState state = (DominoState) jugadorQueHaMovido.getState();
+			state.eliminarFicha(posicion);
+			eliminarFichaJugador(posicion,jugadorQueHaMovido);
 			if (colocar.equals("delante")) {
 				mesa.add(0, nueva);
 
 			} else
 				mesa.add(nueva);
+			JSONObject jso = new JSONObject();
+			jso.put("type", "actualizartablero");
 			jso.put("posicion", this.colocar);
 			jso.put("ficha", this.nueva.toJSON());
 			for (User user : this.players)
 				user.send(jso);
 		}
 		cambiarTurno(jugadorQueHaMovido);
+	}
+
+	private void eliminarFichaJugador(int posicion, User jugadorQueHaMovido) {
+		JSONObject jso = new JSONObject();
+		jso.put("Eliminar Ficha", posicion);
+		jugadorQueHaMovido.send(jso);	
 	}
 
 	private void cambiarTurno(User jugadorQueHaMovido) {

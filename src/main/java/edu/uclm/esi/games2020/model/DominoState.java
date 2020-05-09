@@ -30,4 +30,8 @@ public class DominoState implements IState {
 		return this.fichas;
 	}
 
+	public void eliminarFicha(int posicion) {
+		this.fichas.remove(posicion);	
+	}
+
 }

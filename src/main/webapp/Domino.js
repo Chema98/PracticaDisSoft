@@ -79,9 +79,11 @@ function ViewModel() {
         	if (posicion == "delante"){
         		self.mesa.unshift(f);
         	}else{
-        		/*[5,6][4,2] */
         		self.mesa.push(f);        		
         	}
+        } else if (data.type =="Eliminar Ficha"){
+        	var posicion = data.posicion;
+            self.fichasJugador.splice(posicion,1);
         } else if (data.type =="cambioturno"){
         	var turno = data.turno;
             self.turno(turno);
