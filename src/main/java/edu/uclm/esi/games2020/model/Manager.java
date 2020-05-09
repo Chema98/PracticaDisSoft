@@ -89,9 +89,6 @@ public class Manager {
 	}
 
 	public Match findMatch(String string) {
-		Match match = null;
-		//buscamos el partido con el string indicado
-		match = this.inPlayMatches.get(string);
-		return match;
+		return this.inPlayMatches.get(string);
 	}
 }
