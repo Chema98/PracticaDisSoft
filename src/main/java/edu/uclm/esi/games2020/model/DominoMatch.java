@@ -18,8 +18,12 @@ public class DominoMatch extends Match {
 		this.fichas = new BarajaDomino();
 		this.fichas.remover();
 	}
+	
+	public void addPlayer(User user) {
+		super.addPlayer(user);
+		this.setState(user);
+	}
 
-	@Override
 	protected void setState(User user) {
 		IState state = new DominoState();
 		user.setState(state);

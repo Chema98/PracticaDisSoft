@@ -44,7 +44,11 @@ public class EscobaMatch extends Match {
 		return jso;
 	}
 
-	@Override
+	public void addPlayer(User user) {
+		super.addPlayer(user);
+		this.setState(user);
+	}
+	
 	protected void setState(User user) {
 		IState state = new EscobaState();
 		user.setState(state);

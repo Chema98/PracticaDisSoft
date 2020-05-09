@@ -24,10 +24,10 @@ public abstract class Match {
 
 	public void addPlayer(User user) {
 		this.players.add(user);
-		setState(user);
+		//setState(user);
 	}
 
-	protected abstract void setState(User user);
+	//protected abstract void setState(User user);
 
 	public List<User> getPlayers() {
 		return players;

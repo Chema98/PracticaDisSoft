@@ -15,7 +15,7 @@ public class TresEnRayaMatch extends Match {
 		for (int i = 0; i < 9; i++)
 			this.fichas[i] = "";
 	}
-
+	
 	@Override
 	protected JSONObject startData(User player) {
 		JSONObject jso = new JSONObject();
@@ -25,13 +25,6 @@ public class TresEnRayaMatch extends Match {
 		}
 		jso.put("fichas", squaremesa);
 		return jso;
-	}
-
-	@Override
-	protected void setState(User user) {
-		IState state = new TresEnRayaState();
-		user.setState(state);
-		state.setUser(user);
 	}
 
 	@Override
@@ -159,4 +152,6 @@ public class TresEnRayaMatch extends Match {
 		}
 		return ganador;
 	}
+
+	
 }

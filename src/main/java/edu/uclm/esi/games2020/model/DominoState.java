@@ -6,12 +6,10 @@ import java.util.List;
 import org.json.JSONArray;
 
 public class DominoState implements IState {
-	private User user;
 	private List<FichaDomino> fichas;
 	
 	@Override
 	public void setUser(User user) {
-		this.user = user;
 		this.fichas = new ArrayList<>();
 	}
 
