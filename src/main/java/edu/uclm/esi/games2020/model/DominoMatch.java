@@ -194,7 +194,8 @@ public class DominoMatch extends Match {
 
 	private void eliminarFichaJugador(int posicion, User jugadorQueHaMovido) {
 		JSONObject jso = new JSONObject();
-		jso.put("Eliminar Ficha", posicion);
+		jso.put("type", "Eliminar Ficha");
+		jso.put("posicion", posicion);
 		jugadorQueHaMovido.send(jso);	
 	}
 
