@@ -1,13 +1,13 @@
 package edu.uclm.esi.games2020.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.websocket.Session;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.web.socket.WebSocketSession;
 
 public abstract class Match {
 	protected List<User> players;
@@ -24,10 +24,7 @@ public abstract class Match {
 
 	public void addPlayer(User user) {
 		this.players.add(user);
-		//setState(user);
 	}
-
-	//protected abstract void setState(User user);
 
 	public List<User> getPlayers() {
 		return players;
@@ -51,7 +48,7 @@ public abstract class Match {
 		return jso;
 	}
 
-	public void notifyStart() {
+	public void notifyStart() throws IOException {
 		JSONObject jso = this.toJSON();
 		jso.put("type", "matchStarted");
 		for (User player : this.players) {
@@ -62,7 +59,7 @@ public abstract class Match {
 
 	protected abstract JSONObject startData(User player);
 
-	public void playerReady(Session session) {
+	public void playerReady(WebSocketSession session) {
 		++readyPlayers;
 	}
 
@@ -77,7 +74,7 @@ public abstract class Match {
 		return this.started;
 	}
 
-	public void mover(JSONObject jsoMovimiento, Session session) throws Exception {
+	public void mover(JSONObject jsoMovimiento, WebSocketSession session) throws Exception {
 		User jugadorQueHaMovido = jugadorQueHaMovido(session);
 		comprobarTurno(jugadorQueHaMovido);
 		comprobarLegalidad(jsoMovimiento, jugadorQueHaMovido);
@@ -86,7 +83,7 @@ public abstract class Match {
 		notificarAClientes(jsoMovimiento);
 	}
 
-	private User jugadorQueHaMovido(Session session) {
+	private User jugadorQueHaMovido(WebSocketSession session) {
 		for (User user : this.players)
 			if (user.getSession() == session) {
 				return user;
@@ -102,8 +99,8 @@ public abstract class Match {
 
 	protected abstract void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception;
 
-	protected abstract void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido);
+	protected abstract void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws IOException;
 
-	protected abstract void notificarAClientes(JSONObject jsoMovimiento);
+	protected abstract void notificarAClientes(JSONObject jsoMovimiento) throws IOException;
 
 }

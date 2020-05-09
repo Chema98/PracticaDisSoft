@@ -1,5 +1,6 @@
 package edu.uclm.esi.games2020.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -189,7 +190,7 @@ public class DominoMatch extends Match {
 	}
 
 	@Override
-	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
+	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws IOException {
 		String subtype = jsoMovimiento.getString("subtype");
 		if (subtype.equals("ponerFicha")) {
 			int posicion = jsoMovimiento.getInt("posicion");
@@ -211,7 +212,7 @@ public class DominoMatch extends Match {
 		cambiarTurno(jugadorQueHaMovido);
 	}
 
-	private void eliminarFichaJugador(int posicion, User jugadorQueHaMovido) {
+	private void eliminarFichaJugador(int posicion, User jugadorQueHaMovido) throws IOException {
 		JSONObject jso = new JSONObject();
 		jso.put("type", "Eliminar Ficha");
 		jso.put("posicion", posicion);
@@ -227,7 +228,7 @@ public class DominoMatch extends Match {
 	}
 
 	@Override
-	protected void notificarAClientes(JSONObject jsoMovimiento) {
+	protected void notificarAClientes(JSONObject jsoMovimiento) throws IOException {
 		JSONObject jso = new JSONObject();
 		if (ganador != null) {
 			jso.put("type", "ganador");

@@ -1,5 +1,6 @@
 package edu.uclm.esi.games2020.model;
 
+import java.io.IOException;
 import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public class TresEnRayaMatch extends Match {
 	}
 
 	@Override
-	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
+	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws IOException {
 		int posicion = jsoMovimiento.getInt("posicion");
 		JSONObject jso = new JSONObject();
 		if (jugadorQueHaMovido == this.players.get(0)) {
@@ -79,7 +80,7 @@ public class TresEnRayaMatch extends Match {
 	}
 
 	@Override
-	protected void notificarAClientes(JSONObject jsoMovimiento) {
+	protected void notificarAClientes(JSONObject jsoMovimiento) throws IOException {
 		JSONObject jso = new JSONObject();
 		if (ganador !=null) {
 			jso.put("type", "ganador");
