@@ -115,7 +115,7 @@ class Ficha {
 	
 	ponerFicha(){
 		var posicion = 0;
-		for (var i=0; i<self.fichasJugador.length; i++) {
+		for (var i=0; i<self.fichasJugador().length; i++) {
 			if (self.fichasJugador()[i].igual(this)) {
 				posicion = i;
 				break;
