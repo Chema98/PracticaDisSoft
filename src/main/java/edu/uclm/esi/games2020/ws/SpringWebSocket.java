@@ -37,7 +37,7 @@ public class SpringWebSocket extends TextWebSocketHandler {
 		JSONObject jso = new JSONObject(message.getPayload().toString());
 		try {
 			if (jso.getString("type").equals("ready")) {
-				Manager.get().playerReady(jso.getString("idMatch"), session);
+				Manager.get().playerReady(jso.getString("idMatch"));
 			} else if (jso.getString("type").equals("movement")) {
 				String idMatch = jso.getString("idMatch");
 				Match match = Manager.get().findMatch(idMatch);

@@ -13,6 +13,8 @@ public class DominoMatch extends Match {
 	private ArrayList<FichaDomino> mesa = new ArrayList<FichaDomino>();
 	private String colocar;
 	private FichaDomino nueva = new FichaDomino();
+	private static String DELANTE = "delante";
+	private static String DETRAS = "detras";
 
 	public DominoMatch() {
 		super();
@@ -20,6 +22,7 @@ public class DominoMatch extends Match {
 		this.fichas.remover();
 	}
 	
+	@Override
 	public void addPlayer(User user) {
 		super.addPlayer(user);
 		this.setState(user);
@@ -126,10 +129,8 @@ public class DominoMatch extends Match {
 			jso.put("type", "Ficha Robada");
 			jso.put("ficha", robar.toJSON());
 			jugadorQueHaMovido.send(jso);
-		} else if (subtype.equals("pasar")) {
-			if (this.fichas.vacio()) {
+		} else if (subtype.equals("pasar") && this.fichas.vacio()) {
 				contadorpasar++;
-			}
 		}
 	}
 
@@ -138,7 +139,7 @@ public class DominoMatch extends Match {
 		FichaDomino auxiliar = new FichaDomino(jsoMovimiento.getInt("numero1"), jsoMovimiento.getInt("numero2"));
 		if (this.mesa.isEmpty()) {
 			valida = true;
-			this.colocar = "delante";
+			this.colocar = DELANTE;
 			this.nueva = auxiliar;
 		} else if (comprobarFicha(this.mesa, auxiliar)) {
 			valida = true;
@@ -162,12 +163,12 @@ public class DominoMatch extends Match {
 	private boolean comprobarultimaficha(FichaDomino auxiliar, FichaDomino ultima) {
 		boolean valida = false;
 		if (auxiliar.getNumero1() == ultima.getNumero2()) {
-			this.colocar = "detras";
+			this.colocar = DETRAS;
 			this.nueva = auxiliar;
 			valida = true;
 		} else if (auxiliar.getNumero2() == ultima.getNumero2()) {
 			FichaDomino poner = new FichaDomino(auxiliar.getNumero2(), auxiliar.getNumero1());
-			this.colocar = "detras";
+			this.colocar = DETRAS;
 			this.nueva = poner;
 			valida = true;
 		}
@@ -177,12 +178,12 @@ public class DominoMatch extends Match {
 	private boolean comprobarprimeraficha(FichaDomino auxiliar, FichaDomino primera) {
 		boolean valida = false;
 		if (auxiliar.getNumero2() == primera.getNumero1()) {
-			this.colocar = "delante";
+			this.colocar = DELANTE;
 			this.nueva = auxiliar;
 			valida = true;
 		} else if (auxiliar.getNumero1() == primera.getNumero1()) {
 			FichaDomino poner = new FichaDomino(auxiliar.getNumero2(), auxiliar.getNumero1());
-			this.colocar = "delante";
+			this.colocar = DELANTE;
 			this.nueva = poner;
 			valida = true;
 		}
@@ -197,11 +198,11 @@ public class DominoMatch extends Match {
 			DominoState state = (DominoState) jugadorQueHaMovido.getState();
 			state.eliminarFicha(posicion);
 			eliminarFichaJugador(posicion,jugadorQueHaMovido);
-			if (colocar.equals("delante")) {
+			if (colocar.equals(DELANTE)) {
 				mesa.add(0, nueva);
-
-			} else
+			} else {
 				mesa.add(nueva);
+			}
 			JSONObject jso = new JSONObject();
 			jso.put("type", "actualizartablero");
 			jso.put("posicion", this.colocar);

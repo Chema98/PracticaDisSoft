@@ -99,9 +99,9 @@ public class Manager {
 		return result;
 	}
 
-	public void playerReady(String idMatch, WebSocketSession session) throws IOException {
+	public void playerReady(String idMatch) throws IOException {
 		Match match = this.pendingMatches.get(idMatch);
-		match.playerReady(session);
+		match.playerReady();
 		if (match.ready()) {
 			this.pendingMatches.remove(idMatch);
 			this.inPlayMatches.put(idMatch, match);

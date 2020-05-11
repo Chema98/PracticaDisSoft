@@ -44,6 +44,7 @@ public class EscobaMatch extends Match {
 		return jso;
 	}
 
+	@Override
 	public void addPlayer(User user) {
 		super.addPlayer(user);
 		this.setState(user);
@@ -77,14 +78,11 @@ public class EscobaMatch extends Match {
 
 	@Override
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void notificarAClientes(JSONObject jsoMovimiento) {
-		// TODO Auto-generated method stub
-		
+	protected void notificarAClientes(JSONObject jsoMovimiento) {		
 	}
 
 }

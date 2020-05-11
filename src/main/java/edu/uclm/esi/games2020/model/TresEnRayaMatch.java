@@ -70,7 +70,7 @@ public class TresEnRayaMatch extends Match {
 	@Override
 	protected void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception {
 		int posicion = jsoMovimiento.getInt("posicion");
-		if (this.fichas[posicion] != "") {
+		if (!this.fichas[posicion].equals("")) {
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Movimiento");
 			jugadorQueHaMovido.send(jso);
@@ -119,39 +119,35 @@ public class TresEnRayaMatch extends Match {
 	}
 
 	private boolean comprobardiagonalizquierda() {
-		boolean ganador = false;
 		if (this.fichas[2].equals(this.fichas[4]) && this.fichas[2].equals(this.fichas[6])) {
-			ganador = true;
+			return true;
 		}
-		return ganador;
+		return false;
 	}
 
 	private boolean comprobardiagonalderecha() {
-		boolean ganador = false;
 		if (this.fichas[0].equals(this.fichas[4]) && this.fichas[0].equals(this.fichas[8])) {
-			ganador = true;
+			return true;
 		}
-		return ganador;
+		return false;
 	}
 
 	private boolean comprobarcolumna() {
-		boolean ganador = false;
 		for (int i = 0; i < 3; i++) {
 			if (this.fichas[i].equals(this.fichas[i+3]) && this.fichas[i].equals(this.fichas[i+6])) {
-				return ganador = true;
+				return true;
 			}
 		}
-		return ganador;
+		return false;
 	}
 
 	private boolean comprobarfila() {
-		boolean ganador = false;
 		for (int i = 0; i < this.fichas.length; i = i + 3) {
 			if (this.fichas[i].equals(this.fichas[i+1]) && this.fichas[i].equals(this.fichas[i+2])) {
-				return ganador = true;
+				return true;
 			}
 		}
-		return ganador;
+		return false;
 	}
 
 	
