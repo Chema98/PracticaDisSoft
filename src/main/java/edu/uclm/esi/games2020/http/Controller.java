@@ -45,7 +45,7 @@ public class Controller {
 	}
 	
 	@GetMapping("/getGames")
-	public JSONArray getGames(HttpSession session) throws Exception {
+	public JSONArray getGames(HttpSession session){
 		return Manager.get().getGames();
 	}
 	

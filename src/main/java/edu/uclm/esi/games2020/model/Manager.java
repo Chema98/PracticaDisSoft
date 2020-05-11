@@ -71,14 +71,15 @@ public class Manager {
 				this.connectedUsersByUserName.put(userName, user);
 				this.connectedUsersByHttpSession.put(httpSession.getId(), user);
 				return user;
-			} else
+			} else {
 				throw new Exception("Credenciales inválidas");
+			}
 		} catch (SQLException e) {
 			throw new Exception("Credenciales inválidas");
 		}
 	}
 
-	public void register(String email, String userName, String pwd) throws Exception {
+	public void register(String email, String userName, String pwd) {
 		User user = new User();
 		user.setEmail(email);
 		user.setUserName(userName);

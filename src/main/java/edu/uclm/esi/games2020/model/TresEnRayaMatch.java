@@ -9,6 +9,7 @@ public class TresEnRayaMatch extends Match {
 	private String[] fichas;
 	private int contador = 0;
 	private boolean empate = false;
+	private static String POSICION = "posicion";
 
 	public TresEnRayaMatch() {
 		super();
@@ -16,7 +17,7 @@ public class TresEnRayaMatch extends Match {
 		for (int i = 0; i < 9; i++)
 			this.fichas[i] = "";
 	}
-	
+
 	@Override
 	protected JSONObject startData(User player) {
 		JSONObject jso = new JSONObject();
@@ -30,7 +31,7 @@ public class TresEnRayaMatch extends Match {
 
 	@Override
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws IOException {
-		int posicion = jsoMovimiento.getInt("posicion");
+		int posicion = jsoMovimiento.getInt(POSICION);
 		JSONObject jso = new JSONObject();
 		if (jugadorQueHaMovido == this.players.get(0)) {
 			this.fichas[posicion] = "X";
@@ -40,7 +41,7 @@ public class TresEnRayaMatch extends Match {
 			this.jugadorConElTurno = this.players.get(0);
 		}
 		jso.put("type", "actualizartablero");
-		jso.put("posicion", posicion);
+		jso.put(POSICION, posicion);
 		jso.put("estado", this.fichas[posicion]);
 		for (User user : this.players)
 			user.send(jso);
@@ -69,7 +70,7 @@ public class TresEnRayaMatch extends Match {
 
 	@Override
 	protected void comprobarLegalidad(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws Exception {
-		int posicion = jsoMovimiento.getInt("posicion");
+		int posicion = jsoMovimiento.getInt(POSICION);
 		if (!this.fichas[posicion].equals("")) {
 			JSONObject jso = new JSONObject();
 			jso.put("type", "Movimiento");
@@ -82,13 +83,13 @@ public class TresEnRayaMatch extends Match {
 	@Override
 	protected void notificarAClientes(JSONObject jsoMovimiento) throws IOException {
 		JSONObject jso = new JSONObject();
-		if (ganador !=null) {
+		if (ganador != null) {
 			jso.put("type", "ganador");
-			jso.put("ganador",this.ganador.getUserName());
-		}else if (empate) {
+			jso.put("ganador", this.ganador.getUserName());
+		} else if (empate) {
 			jso.put("type", "empate");
-		}else {
-			jso.put("type","cambioturno");
+		} else {
+			jso.put("type", "cambioturno");
 			jso.put("turno", this.jugadorConElTurno.getUserName());
 		}
 		for (User user : this.players)
@@ -102,7 +103,7 @@ public class TresEnRayaMatch extends Match {
 		}
 		if (this.contador == 9 && this.ganador == null)
 			this.empate = true;
-		
+
 	}
 
 	public User compruebaGanador(User jugadorQueHaMovido) {
@@ -110,7 +111,7 @@ public class TresEnRayaMatch extends Match {
 		boolean columna = comprobarcolumna();
 		boolean diagonalderecha = comprobardiagonalderecha();
 		boolean diagonalizquierda = comprobardiagonalizquierda();
-		
+
 		if (fila || columna || diagonalderecha || diagonalizquierda) {
 			return jugadorQueHaMovido;
 		}
@@ -119,22 +120,16 @@ public class TresEnRayaMatch extends Match {
 	}
 
 	private boolean comprobardiagonalizquierda() {
-		if (this.fichas[2].equals(this.fichas[4]) && this.fichas[2].equals(this.fichas[6])) {
-			return true;
-		}
-		return false;
+		return (this.fichas[2].equals(this.fichas[4]) && this.fichas[2].equals(this.fichas[6]));
 	}
 
 	private boolean comprobardiagonalderecha() {
-		if (this.fichas[0].equals(this.fichas[4]) && this.fichas[0].equals(this.fichas[8])) {
-			return true;
-		}
-		return false;
+		return (this.fichas[0].equals(this.fichas[4]) && this.fichas[0].equals(this.fichas[8]));
 	}
 
 	private boolean comprobarcolumna() {
 		for (int i = 0; i < 3; i++) {
-			if (this.fichas[i].equals(this.fichas[i+3]) && this.fichas[i].equals(this.fichas[i+6])) {
+			if (this.fichas[i].equals(this.fichas[i + 3]) && this.fichas[i].equals(this.fichas[i + 6])) {
 				return true;
 			}
 		}
@@ -143,12 +138,11 @@ public class TresEnRayaMatch extends Match {
 
 	private boolean comprobarfila() {
 		for (int i = 0; i < this.fichas.length; i = i + 3) {
-			if (this.fichas[i].equals(this.fichas[i+1]) && this.fichas[i].equals(this.fichas[i+2])) {
+			if (this.fichas[i].equals(this.fichas[i + 1]) && this.fichas[i].equals(this.fichas[i + 2])) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	
 }

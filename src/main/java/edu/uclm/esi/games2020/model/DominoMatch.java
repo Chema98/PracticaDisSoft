@@ -10,11 +10,12 @@ public class DominoMatch extends Match {
 	private int contadorpasar = 0;
 	private boolean empate = false;
 	private BarajaDomino fichas;
-	private ArrayList<FichaDomino> mesa = new ArrayList<FichaDomino>();
+	private ArrayList<FichaDomino> mesa = new ArrayList<>();
 	private String colocar;
 	private FichaDomino nueva = new FichaDomino();
 	private static String DELANTE = "delante";
 	private static String DETRAS = "detras";
+	private static String POSICION = "posicion";
 
 	public DominoMatch() {
 		super();
@@ -194,7 +195,7 @@ public class DominoMatch extends Match {
 	protected void actualizarTablero(JSONObject jsoMovimiento, User jugadorQueHaMovido) throws IOException {
 		String subtype = jsoMovimiento.getString("subtype");
 		if (subtype.equals("ponerFicha")) {
-			int posicion = jsoMovimiento.getInt("posicion");
+			int posicion = jsoMovimiento.getInt(POSICION);
 			DominoState state = (DominoState) jugadorQueHaMovido.getState();
 			state.eliminarFicha(posicion);
 			eliminarFichaJugador(posicion,jugadorQueHaMovido);
@@ -205,7 +206,7 @@ public class DominoMatch extends Match {
 			}
 			JSONObject jso = new JSONObject();
 			jso.put("type", "actualizartablero");
-			jso.put("posicion", this.colocar);
+			jso.put(POSICION, this.colocar);
 			jso.put("ficha", this.nueva.toJSON());
 			for (User user : this.players)
 				user.send(jso);
@@ -216,7 +217,7 @@ public class DominoMatch extends Match {
 	private void eliminarFichaJugador(int posicion, User jugadorQueHaMovido) throws IOException {
 		JSONObject jso = new JSONObject();
 		jso.put("type", "Eliminar Ficha");
-		jso.put("posicion", posicion);
+		jso.put(POSICION, posicion);
 		jugadorQueHaMovido.send(jso);	
 	}
 

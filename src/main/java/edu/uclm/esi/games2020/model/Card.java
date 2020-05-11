@@ -5,7 +5,6 @@ import org.json.JSONObject;
 public class Card {
 	private int number;
 	private Suit suit;
-	private IState state;
 	
 	public Card(int number, Suit suit) {
 		super();
@@ -20,8 +19,8 @@ public class Card {
 		return jso;
 	}
 
+	
 	public void setState(IState state) {
-		this.state = state;
 	}
 	
 }
