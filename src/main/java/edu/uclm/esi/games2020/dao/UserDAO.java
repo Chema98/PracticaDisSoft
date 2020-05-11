@@ -9,10 +9,14 @@ import edu.uclm.esi.games2020.model.*;
 
 public class UserDAO {
 
+	private UserDAO() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static void insert(String email, String userName, String pwd) throws Exception {
-		try(Connection bd=Broker.get().getBd()) {
-			String sql="insert into user (email, user_name, pwd) values (?, ?, ?)";
-			try(PreparedStatement ps=bd.prepareStatement(sql)) {
+		try (Connection bd = Broker.get().getBd()) {
+			String sql = "insert into user (email, user_name, pwd) values (?, ?, ?)";
+			try (PreparedStatement ps = bd.prepareStatement(sql)) {
 				ps.setString(1, email);
 				ps.setString(2, userName);
 				ps.setString(3, pwd);
@@ -22,18 +26,20 @@ public class UserDAO {
 	}
 
 	public static User identify(String userName, String pwd) throws SQLException {
-		try(Connection bd=Broker.get().getBd()) {
-			String sql="select email from user where user_name=? and pwd=?";
-			try(PreparedStatement ps=bd.prepareStatement(sql)) {
+		try (Connection bd = Broker.get().getBd()) {
+			String sql = "select email from user where user_name=? and pwd=?";
+			try (PreparedStatement ps = bd.prepareStatement(sql)) {
 				ps.setString(1, userName);
 				ps.setString(2, pwd);
-				try(ResultSet rs=ps.executeQuery()) {
+				try (ResultSet rs = ps.executeQuery()) {
 					if (rs.next()) {
-						User user=new User();
+						User user = new User();
 						user.setEmail(rs.getString(1));
 						user.setUserName(userName);
 						return user;
-					} else throw new SQLException();
+					} else {
+						throw new SQLException();
+					}
 				}
 			}
 		}

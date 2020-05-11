@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Broker {
-	private String user, pwd, url;
+	private String user;
+	private String pwd;
+	private String url;
 	
 	private Broker() {
 		try {

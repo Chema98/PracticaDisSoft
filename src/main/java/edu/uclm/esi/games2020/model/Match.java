@@ -15,7 +15,8 @@ public abstract class Match {
 	protected boolean started;
 	private int readyPlayers;
 	private Game game;
-	protected User jugadorConElTurno, ganador;
+	protected User jugadorConElTurno;
+	protected User ganador;
 
 	public Match() {
 		this.id = UUID.randomUUID().toString();
@@ -24,11 +25,8 @@ public abstract class Match {
 
 	public void addPlayer(User user) {
 		this.players.add(user);
-		//setState(user);
 	}
-
-	//protected abstract void setState(User user);
-
+	
 	public List<User> getPlayers() {
 		return players;
 	}
@@ -62,7 +60,7 @@ public abstract class Match {
 
 	protected abstract JSONObject startData(User player);
 
-	public void playerReady(Session session) {
+	public void playerReady() {
 		++readyPlayers;
 	}
 

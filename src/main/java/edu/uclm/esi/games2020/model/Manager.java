@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.websocket.Session;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -57,7 +55,7 @@ public class Manager {
 			return user;
 		}
 		catch(SQLException e) {
-			throw new Exception("Credenciales invÃ¡lidas");
+			throw new Exception("Credenciales inválidas");
 		}
 	}
 	
@@ -78,9 +76,9 @@ public class Manager {
 	}
 
 	
-	public void playerReady(String idMatch, Session session) {
+	public void playerReady(String idMatch) {
 		Match match = this.pendingMatches.get(idMatch);
-		match.playerReady(session);
+		match.playerReady();
 		if (match.ready()) {
 			this.pendingMatches.remove(idMatch);
 			this.inPlayMatches.put(idMatch, match);

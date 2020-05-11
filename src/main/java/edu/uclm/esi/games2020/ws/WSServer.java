@@ -28,7 +28,7 @@ public class WSServer {
 		System.out.println("La sesión " + session.getId() + " dice " + message);
 		JSONObject jso = new JSONObject(message);
 		if (jso.getString("type").equals("ready")) {
-			Manager.get().playerReady(jso.getString("idMatch"), session);
+			Manager.get().playerReady(jso.getString("idMatch"));
 		}else if (jso.getString("type").equals("movimiento")) {
             Match match = Manager.get().findMatch(jso.getString("idMatch"));
             match.mover(jso, session);
