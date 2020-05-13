@@ -9,7 +9,7 @@ public class TresEnRayaMatch extends Match {
 	private String[] fichas;
 	private int contador = 0;
 	private boolean empate = false;
-	private static String POSICION = "posicion";
+	private static final String POSICION = "posicion";
 
 	public TresEnRayaMatch() {
 		super();

@@ -43,11 +43,14 @@ public class SpringWebSocket extends TextWebSocketHandler {
 				Match match = Manager.get().findMatch(idMatch);
 				match.mover(jso, session);
 			}
+		} catch (NullPointerException ne) {
+			jso = new JSONObject();
+			jso.put("type", "error");
+			jso.put("message", "NullPointerException en algún lado");
+			session.sendMessage(new TextMessage(jso.toString()));
 		} catch (Exception e) {
 			jso = new JSONObject();
 			jso.put("type", "error").put("message", e.getMessage());
-			if (e instanceof NullPointerException)
-				jso.put("message", "NullPointerException en algún lado");
 			session.sendMessage(new TextMessage(jso.toString()));
 		}
 	}

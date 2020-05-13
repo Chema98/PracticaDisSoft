@@ -13,9 +13,9 @@ public class DominoMatch extends Match {
 	private ArrayList<FichaDomino> mesa = new ArrayList<>();
 	private String colocar;
 	private FichaDomino nueva = new FichaDomino();
-	private static String DELANTE = "delante";
-	private static String DETRAS = "detras";
-	private static String POSICION = "posicion";
+	private static final String DELANTE = "delante";
+	private static final String DETRAS = "detras";
+	private static final String POSICION = "posicion";
 
 	public DominoMatch() {
 		super();
